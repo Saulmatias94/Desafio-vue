@@ -25,19 +25,23 @@
         </b-form-group>
 
         <b-form-group id="input-group-3" label="Precio:" label-for="input-3">
+          <span class="inline">$</span>
           <b-form-input
             id="input-3"
             v-model="form.precio"
             required
+            type="number"
+            min="1"
+            step="1"
           ></b-form-input>
-          <span id="letra"></span>
+          
         </b-form-group>
         <b-button
           v-show="form.update"
           @click="update2"
           variant="success"
           class="m-2"
-          >editar</b-button
+          >Editar</b-button
         >
         <b-button
           v-show="form.update == false"
@@ -47,26 +51,29 @@
           >Añadir Producto</b-button
         >
         <b-button v-show="form.update == false" type="reset" variant="danger"
-          >limpiar</b-button
+          >Limpiar</b-button
         >
       </b-form>
 
       <b-col class="">
         <b-table
-          striped
+          responsive
           hover
           :items="items"
           :fields="fields"
           :tbody-tr-class="rowClass"
-          class="border"
+          class="table table-bordered border-primary"
         >
+          <template #cell(precio)="row">
+            <span>${{ row.item.precio }}</span>
+          </template>
           <template #cell(botones)="row">
             <b-button
               :disabled="form.update"
               variant="success"
               size="sm"
               @click="update(row.item.id)"
-              class="mr-1"
+              class="m-1"
             >
               Editar
             </b-button>
@@ -97,7 +104,8 @@ export default {
       form: {
         nombres: "",
         descripcion: "",
-        precio: "$",
+        precio: "",
+        signo: "$",
         update: false,
       },
       show: true,
@@ -113,8 +121,8 @@ export default {
   },
   methods: {
     rowClass(item) {
-      if (!item.update) return "table-primary ";
-      if (item.update) return "table-warning";
+      if (!item.update) return "table-default";
+      if (item.update) return "table-waryarning";
     },
     onSubmit(event) {
       event.preventDefault();
@@ -157,7 +165,7 @@ export default {
           this.items[i].update = false;
           this.form.nombres = "";
           this.form.descripcion = "";
-          this.form.precio = "";
+          this.form.precio = "$";
           this.form.update = false;
         }
       }
